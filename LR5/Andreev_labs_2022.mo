@@ -1,380 +1,4 @@
-package Andreev_labs_2022
-  model laba1
-    // переменные
-    Real x1[10];
-    Real x2[10];
-    // параметры
-    parameter Real a = 1;
-    parameter Real b = 1;
-    parameter Real c = 1;
-    parameter Real d = 1;
-    parameter Integer n = 10;
-  initial equation
-    for i in 1:n loop
-      x1[i] = i / 2;
-      x2[i] = x1[i] / 2;
-    end for;
-  equation
-    for i in 1:n loop
-      der(x1[i]) = x1[i] * (a - b * x2[i]);
-      der(x2[i]) = -x2[i] * (c - d * x1[i]);
-    end for;
-    annotation(
-      experiment(StartTime = 0, StopTime = 15, Tolerance = 1e-06, Interval = 0.00015));
-  end laba1;
-
-  model laba2_1
-    Real x(start = -1);
-    Real v(start = -1);
-    Real F;
-    Real flag(start = 1.5);
-    parameter Real k2 = 1;
-    parameter Real k3 = 2;
-    parameter Real k4 = 3;
-    parameter Real a = 1;
-    parameter Real b = 0.5;
-    parameter Real K = 5;
-  equation
-    der(x) = v;
-    der(v) = (-F) - k2 * x + k3 * sin(k4 * time);
-    if flag < 2 then
-      if x < (-b * a) then
-        F = -K;
-      else
-        F = 0;
-        flag = 2.5;
-      end if;
-    elseif flag < 3 then
-      if x < (-a) then
-        F = -K;
-        flag = 1.5;
-      elseif x < a then
-        F = 0;
-      else
-        F = K;
-        flag = 3.5;
-      end if;
-    else
-      if x > b * a then
-        F = K;
-      else
-        F = 0;
-        flag = 2.5;
-      end if;
-    end if;
-    annotation(
-      experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.02));
-  end laba2_1;
-
-  model laba2_2
-    Real x(start = -1);
-    Real v(start = -1);
-    Real F;
-    Real flag(start = 1.5);
-    parameter Real k2 = 1;
-    parameter Real k3 = 2;
-    parameter Real k4 = 3;
-    parameter Real a = 1;
-    parameter Real b = 0.5;
-    parameter Real K = 5;
-  equation
-    der(x) = v;
-    der(v) = (-F) - k2 * x + k3 * sin(k4 * time);
-    if flag < 2 then
-      if x < b then
-        F = -K;
-      elseif x > a then
-        F = K;
-        flag = 2.5;
-      else
-        F = 2 * K * (x - b) / (a - b) - K;
-        flag = 2.5;
-      end if;
-    else
-      if x > (-b) then
-        F = K;
-      elseif x < (-a) then
-        F = -K;
-        flag = 1.5;
-      else
-        F = 2 * K * (x + a) / ((-b) + a) - K;
-        flag = 1.5;
-      end if;
-    end if;
-    annotation(
-      experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.02));
-  end laba2_2;
-
-  model laba2_3
-    Real x(start = -4);
-    Real v(start = -4);
-    Real F;
-    parameter Real k2 = 1;
-    parameter Real k3 = 2;
-    parameter Real k4 = 3;
-    parameter Real a = 1;
-    parameter Real d = 2;
-    parameter Real K = 5;
-    parameter Real b = 3;
-  equation
-    der(x) = v;
-    der(v) = (-F) - k2 * x + k3 * sin(k4 * time);
-    if x < (-d) then
-      F = -K;
-    elseif x < (-a) then
-      F = ((-b) + K) * (x + d) / ((-a) + d) - K;
-    elseif x < a then
-      F = 0;
-    elseif x < d then
-      F = (b - K) * (x - d) / (a - d) + K;
-    else
-      F = K;
-    end if;
-    annotation(
-      experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-6, Interval = 0.02));
-  end laba2_3;
-
-  model lr3_1
-    Modelica.Electrical.Analog.Basic.Resistor R1(R = 2000) annotation(
-      Placement(visible = true, transformation(origin = {20, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Resistor R2(R = 3000) annotation(
-      Placement(visible = true, transformation(origin = {-20, -28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Capacitor C2(C = 0.0000001) annotation(
-      Placement(visible = true, transformation(origin = {70, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-    Modelica.Electrical.Analog.Basic.Capacitor C1(C = 0.0000001) annotation(
-      Placement(visible = true, transformation(origin = {20, 52}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Sources.SineVoltage E(V = 220, f = 50) annotation(
-      Placement(visible = true, transformation(origin = {-70, 2}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Electrical.Analog.Basic.Ground ground annotation(
-      Placement(visible = true, transformation(origin = {40, -56}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Andreev_labs_2022.My_resistor My_resistor(R = 888, alpha = 100000) annotation(
-      Placement(visible = true, transformation(origin = {-36, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  equation
-    connect(C1.n, C2.n) annotation(
-      Line(points = {{30, 52}, {50, 52}, {50, 32}, {70, 32}, {70, 12}}, color = {0, 0, 255}));
-    connect(R1.n, C2.n) annotation(
-      Line(points = {{30, 12}, {50, 12}, {50, 32}, {70, 32}, {70, 12}}, color = {0, 0, 255}));
-    connect(C2.p, R2.n) annotation(
-      Line(points = {{70, -8}, {70, -28}, {-10, -28}}, color = {0, 0, 255}));
-    connect(R2.p, E.n) annotation(
-      Line(points = {{-30, -28}, {-70, -28}, {-70, -8}}, color = {0, 0, 255}));
-    connect(ground.p, R2.n) annotation(
-      Line(points = {{40, -46}, {40, -28}, {-10, -28}}, color = {0, 0, 255}));
-    connect(E.p, My_resistor.p) annotation(
-      Line(points = {{-70, 12}, {-70, 30}, {-46, 30}}, color = {0, 0, 255}));
-    connect(My_resistor.n, C1.p) annotation(
-      Line(points = {{-26, 30}, {0, 30}, {0, 52}, {10, 52}}, color = {0, 0, 255}));
-    connect(My_resistor.n, R1.p) annotation(
-      Line(points = {{-26, 30}, {0, 30}, {0, 12}, {10, 12}}, color = {0, 0, 255}));
-    annotation(
-      experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
-  end lr3_1;
-
-  model My_resistor
-    parameter Modelica.Units.SI.Resistance R(start = 1) "Resistance at temperature T_ref";
-    parameter Modelica.Units.SI.Temperature T_ref = 300.15 "Reference temperature";
-    parameter Modelica.Units.SI.LinearTemperatureCoefficient alpha = 100 "Temperature coefficient of resistance (R_actual = R*(1 + alpha*(T_heatPort - T_ref))";
-    parameter Modelica.Units.SI.Current i_0 = 1;
-    parameter Modelica.Units.SI.Current i_max = 0.002;
-    extends Modelica.Electrical.Analog.Interfaces.OnePort;
-    extends Modelica.Electrical.Analog.Interfaces.ConditionalHeatPort(T = T_ref);
-    Modelica.Units.SI.Resistance R_actual "Actual resistance = R*(1 + alpha*(T_heatPort - T_ref))";
-  equation
-    assert(1 + alpha * (T_heatPort - T_ref) >= Modelica.Constants.eps, "Temperature outside scope of model!");
-    if i > i_max then
-      R_actual = R * (1 + alpha * (i_max / i_0 * (i_max / i_0) * (i_max / i_0)));
-    elseif i < (-i_max) then
-      R_actual = R * (1 - alpha * (i_max / i_0 * (i_max / i_0) * (i_max / i_0)));
-    else
-      R_actual = R * (1 + alpha * (i / i_0 * (i / i_0) * (i / i_0)));
-    end if;
-    v = R_actual * i;
-    LossPower = v * i;
-    annotation(
-      Documentation(info = "<html>
-  <p>The linear resistor connects the branch voltage <em>v</em> with the branch current <em>i</em> by <em>i*R = v</em>. The Resistance <em>R</em> is allowed to be positive, zero, or negative.</p>
-  </html>", revisions = "<html>
-  <ul>
-  <li><em> August 07, 2009   </em>
-         by Anton Haumer<br> temperature dependency of resistance added<br>
-         </li>
-  <li><em> March 11, 2009   </em>
-         by Christoph Clauss<br> conditional heat port added<br>
-         </li>
-  <li><em> 1998   </em>
-         by Christoph Clauss<br> initially implemented<br>
-         </li>
-  </ul>
-  </html>"),
-      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent = {{-70, 30}, {70, -30}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Line(points = {{-90, 0}, {-70, 0}}, color = {0, 0, 255}), Line(points = {{70, 0}, {90, 0}}, color = {0, 0, 255}), Text(extent = {{-150, -40}, {150, -80}}, textString = "R=%R"), Line(visible = useHeatPort, points = {{0, -100}, {0, -30}}, color = {127, 0, 0}, pattern = LinePattern.Dot), Text(extent = {{-150, 90}, {150, 50}}, textString = "%name", textColor = {0, 0, 255})}),
-      experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
-  end My_resistor;
-
-  model lr3_2
-    Modelica.Electrical.Analog.Sources.SineVoltage E(V = 220, f = 50) annotation(
-      Placement(visible = true, transformation(origin = {-70, -4}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Electrical.Analog.Basic.Resistor R2(R = 3000) annotation(
-      Placement(visible = true, transformation(origin = {44, 54}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Ground ground annotation(
-      Placement(visible = true, transformation(origin = {40, -56}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Capacitor C1(C = 0.0000001) annotation(
-      Placement(visible = true, transformation(origin = {10, 54}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Resistor R1(R = 2000) annotation(
-      Placement(visible = true, transformation(origin = {46, 8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Resistor R3(R = 3000) annotation(
-      Placement(visible = true, transformation(origin = {-18, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Electrical.Analog.Basic.Inductor L(L = 500) annotation(
-      Placement(visible = true, transformation(origin = {10, 8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Andreev_labs_2022.My_resistor R(alpha = 10000) annotation(
-      Placement(visible = true, transformation(origin = {-46, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  equation
-    connect(C1.n, R2.p) annotation(
-      Line(points = {{20, 54}, {34, 54}}, color = {0, 0, 255}));
-    connect(L.n, R1.p) annotation(
-      Line(points = {{20, 8}, {36, 8}}, color = {0, 0, 255}));
-    connect(R2.n, R3.n) annotation(
-      Line(points = {{54, 54}, {60, 54}, {60, 28}, {80, 28}, {80, -34}, {-8, -34}}, color = {0, 0, 255}));
-    connect(R1.n, R3.n) annotation(
-      Line(points = {{56, 8}, {60, 8}, {60, 28}, {80, 28}, {80, -34}, {-8, -34}}, color = {0, 0, 255}));
-    connect(R3.p, E.n) annotation(
-      Line(points = {{-28, -34}, {-70, -34}, {-70, -14}}, color = {0, 0, 255}));
-    connect(ground.p, R3.n) annotation(
-      Line(points = {{40, -46}, {40, -34}, {-8, -34}}, color = {0, 0, 255}));
-    connect(E.p, R.p) annotation(
-      Line(points = {{-70, 6}, {-70, 30}, {-56, 30}}, color = {0, 0, 255}));
-    connect(R.n, C1.p) annotation(
-      Line(points = {{-36, 30}, {-20, 30}, {-20, 54}, {0, 54}}, color = {0, 0, 255}));
-    connect(R.n, L.p) annotation(
-      Line(points = {{-36, 30}, {-20, 30}, {-20, 8}, {0, 8}}, color = {0, 0, 255}));
-    annotation(
-      experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
-  end lr3_2;
-
-  model laba1_2
-    // переменные
-    Real x1[10];
-    Real x2[10];
-    Real x3[10];
-    // параметры
-    parameter Integer n = 10;
-  initial equation
-    for i in 1:n loop
-      x1[i] = i / 2;
-      x2[i] = x1[i] / 2;
-      x3[i] = x2[i] / 2;
-    end for;
-  equation
-    for i in 1:n loop
-      der(x1[i]) = 0.5 * (x1[i] + x2[i]) + x2[i] * x2[i];
-      der(x2[i]) = 0.5 * ((-x1[i]) + 3 * x2[i]);
-      der(x3[i]) = -0.5 * x3[i];
-    end for;
-  end laba1_2;
-
-  package laba4
-    model Podverzhennye
-      //Integer X(start = 15000);
-      //Integer Y(start = 1);
-      //Integer W(start = 0);
-      Real P;
-      parameter Real D = 0.00134 / 365;
-      parameter Real B = 0.00097 / 365;
-      parameter Integer V = 20;
-      Input inX;
-      Input inY;
-      Input inW;
-      Output outX;
-    equation
-      P = 0.5;
-//inY.val / (inX.val + inY.val + inW.val);
-      der(inX.val) = (-P * inX.val * inY.val) - D * inX.val - V + B * inX.val;
-      outX.val = inX.val;
-//der(inX.val);
-    end Podverzhennye;
-
-    model Zarachennye_ne_gospital
-      //Integer X(start = 15000);
-      //Integer Y(start = 1);
-      //Integer W(start = 0);
-      Real P;
-      parameter Real D = 0.00134 / 365;
-      parameter Real D_i = 0.01;
-      parameter Real R = 0.2;
-      parameter Real H = 10;
-      Input inX;
-      Input inY;
-      Input inW;
-      Output outY;
-    equation
-      P = 0.5;
-//inY.val / (inX.val + inY.val + inW.val);
-      der(inY.val) = P * inX.val * inY.val - D * inY.val - D_i * inY.val - R * inY.val - H;
-      outY.val = der(inY.val);
-    end Zarachennye_ne_gospital;
-
-    model Immunitetnye
-      //Integer Y(start = 1);
-      //Integer W(start = 0);
-      Real P;
-      parameter Real D = 0.00134 / 365;
-      parameter Real R = 0.2;
-      parameter Integer V = 20;
-      Input inX;
-      Input inY;
-      Input inW;
-      Output outW;
-    equation
-      P = 0.5;
-//inY.val / (inX.val + inY.val + inW.val);
-      der(inW.val) = R * inY.val + V - D * inW.val;
-      outW.val = inW.val;
-    end Immunitetnye;
-
-    connector Output
-      output Real val;
-    end Output;
-
-    connector Input
-      input Real val;
-    end Input;
-
-    model Pandemy
-      //Podverzhennye X;
-      //Zarachennye_ne_gospital Y;
-      //Immunitetnye W;
-      //equation
-      //connect(X.outX, X.inX);
-      //connect(X.outX, Y.inX);
-      //connect(X.outX, W.inX);
-      //connect(Y.outY, Y.inY);
-      //connect(Y.outY, X.inY);
-      //connect(Y.outY, W.inY);
-      //connect(W.outW, W.inW);
-      //connect(W.outW, X.inW);
-      //connect(W.outW, Y.inW);
-      Real X;
-      Real Y;
-      Real W;
-      Real P;
-      constant Real D = 0.00134 / 365;
-      constant Real B = 0.00097 / 365;
-      constant Integer V = 20;
-      constant Real D_i = 0.01;
-      constant Real R = 0.2;
-      constant Real H = 10;
-    initial equation
-      W = 117;
-      Y = 1;
-      X = 168660;
-    equation
-      P = Y / (X + Y + W);
-      der(X) = (-P * (X + Y)) - D * X - V + B * X;
-      der(Y) = P * (X + Y) - D * Y - D_i * Y - R * Y - H;
-      der(W) = R * Y + V - D * W;
-      annotation(
-        experiment(StartTime = 0, StopTime = 100, Tolerance = 1e-06, Interval = 0.2));
-    end Pandemy;
-  end laba4;
+package Fejzullin_Lab_5_6
 
   package laba5_kinematic
     model Body2D
@@ -403,7 +27,7 @@ package Andreev_labs_2022
     end KinematicOutput;
 
     model Rod2D
-      extends Andreev_labs_2022.laba5_kinematic.Body2D;
+      extends Fejzullin_Lab_5_6.laba5_kinematic.Body2D;
       parameter Modelica.Units.SI.Length L = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
     equation
@@ -424,7 +48,7 @@ package Andreev_labs_2022
     end FreeRod;
 
     model Wheel2D
-      extends Andreev_labs_2022.laba5_kinematic.Body2D;
+      extends Fejzullin_Lab_5_6.laba5_kinematic.Body2D;
       parameter Modelica.Units.SI.Length R = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape WheelShape(shapeType = "cylinder", length = 0.1, width = 2 * R, height = 2 * R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape BoxShape(shapeType = "box", length = 0.2, width = R, height = R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = 0.7 * Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
@@ -510,7 +134,7 @@ package Andreev_labs_2022
         experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.0002));
     end DvePalkiNaOpore;
 
-    model TriPalki
+    model ThreePalkas
       parameter Modelica.Units.SI.Length L1 = 2;
       parameter Modelica.Units.SI.Length L2 = 4;
       parameter Modelica.Units.SI.Length L3 = 6;
@@ -519,9 +143,9 @@ package Andreev_labs_2022
       parameter Modelica.Units.SI.Angle phi0_3 = -2;
       parameter Modelica.Units.SI.Length Xo2 = L1 * cos(phi0_1) + L2 * cos(phi0_2) + L3 * cos(phi0_3);
       parameter Modelica.Units.SI.Length Yo2 = L1 * sin(phi0_1) + L2 * sin(phi0_2) + L3 * sin(phi0_3);
-      Rod2D Palka1(Phi(start = phi0_1), L = L1, Color = {0, 255, 80});
-      Rod2D Palka2(Phi(start = phi0_2), L = L2, Color = {255, 255, 0});
-      Rod2D Palka3(Phi(start = phi0_3), L = L3, Color = {255, 0, 255});
+      Rod2D Palka1(Phi(start = phi0_1), L = L1, Color = {255, 0, 0}); //RED
+      Rod2D Palka2(Phi(start = phi0_2), L = L2, Color = {255, 255, 0}); //YELLOW
+      Rod2D Palka3(Phi(start = phi0_3), L = L3, Color = {75, 0, 248}); //BLUE
       Support2D Opora1(Xp = 0, Yp = 0, Xt = -L1 / 2, Yt = 0);
       Support2D Opora2(Xp = Xo2, Yp = Yo2, Xt = L3 / 2, Yt = 0);
       Joint2D Sharnir1(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
@@ -536,7 +160,7 @@ package Andreev_labs_2022
       der(Palka1.Phi) = 1;
       annotation(
         experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.0002));
-    end TriPalki;
+    end ThreePalkas;
 
     model Slider2D
       parameter Modelica.Units.SI.Length Xp = 0;
@@ -561,7 +185,7 @@ package Andreev_labs_2022
         experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
     end Slider2D;
 
-    model DvePalkiPlusPolzun
+    model TwoHandsAndSlider
       parameter Modelica.Units.SI.Length L1 = 2;
       parameter Modelica.Units.SI.Length L2 = 4;
       Rod2D Palka1(L = L1, Color = {0, 255, 80});
@@ -577,9 +201,9 @@ package Andreev_labs_2022
       Palka1.Phi = time;
       annotation(
         experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
-    end DvePalkiPlusPolzun;
+    end TwoHandsAndSlider;
 
-    model RollCircleOnLine
+    model RollCircleOnBottom
       parameter Modelica.Units.SI.Length Xp = 0;
       parameter Modelica.Units.SI.Length Yp = 0;
       parameter Modelica.Units.SI.Angle Phip = 0;
@@ -600,9 +224,9 @@ package Andreev_labs_2022
       der(S) = -der(Body_In.Phi) * R;
       annotation(
         experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
-    end RollCircleOnLine;
+    end RollCircleOnBottom;
 
-    model PalkiPlusLoleso
+    model HandAndCircle
       parameter Modelica.Units.SI.Length L1 = 2;
       parameter Modelica.Units.SI.Length L2 = 4;
       parameter Modelica.Units.SI.Angle phi0_1 = 1.57;
@@ -628,9 +252,420 @@ package Andreev_labs_2022
       der(Palka1.Phi) = 1;
       annotation(
         experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
-    end PalkiPlusLoleso;
+    end HandAndCircle;
 
-    model Zadanie11
+    model Zadanie13
+      parameter Modelica.Units.SI.Length L1 = 2.3;
+      parameter Modelica.Units.SI.Length L2 = 8.5;
+      parameter Modelica.Units.SI.Length L3 = 10;
+      parameter Modelica.Units.SI.Length L4 = 9.5;
+      
+      parameter Modelica.Units.SI.Angle phi0_1 = 1.046;
+      parameter Modelica.Units.SI.Angle phi0_2 = 2.965;
+      parameter Modelica.Units.SI.Angle phi0_3 = 0.523;
+      parameter Modelica.Units.SI.Angle phi0_4 = 2.9481;
+      // pi/3
+    
+      parameter Modelica.Units.SI.Angle phip = 0;
+      //parameter Modelica.Units.SI.Angle phiC = 1.57;
+      
+      parameter Modelica.Units.SI.Length X0 = 0;
+      parameter Modelica.Units.SI.Length Y0 = 0;
+     
+      parameter Modelica.Units.SI.Length R = 2.3;
+      
+      parameter Modelica.Units.SI.Length XK = X0 + L2 * cos(phi0_2) + L1 * cos(phi0_1) + R * sin(phip);
+      parameter Modelica.Units.SI.Length YK = Y0 + L2 * sin(phi0_2) + L1 * sin(phi0_1) - R * cos(phip);
+      //parameter Modelica.Units.SI.Length XC = X0 + L1 * cos(phi0_1) + L4 * cos(phi0_4);
+      
+      Rod2D Palka1(L = L1, Color = {255, 0, 0}, Phi(start = phi0_1)); //Red
+      Rod2D Palka2(L = L2, Color = {255, 255, 0}, Phi(start = phi0_2)); // Yellow
+      Rod2D Palka3(L = L3, Color = {255, 170, 191}, Phi(start = phi0_3)); //Pink
+      Rod2D Palka4(L = L4, Color = {75, 0, 248}, Phi(start = phi0_4)); //Blue
+      
+      Support2D Opora1(Xp = X0,  Yp = Y0,  Xt = -L1 / 2, Yt = 0);
+      
+      parameter Modelica.Units.SI.Length X02 = X0 + L1 * cos(phi0_1) + L2 * cos(phi0_2) + L3 * cos(phi0_3) + L4 * cos(phi0_4);
+      parameter Modelica.Units.SI.Length Y02 = Y0 + L1 * sin(phi0_1) + L2 * sin(phi0_2) + L3 * sin(phi0_3) + L4 * sin(phi0_4);
+      Support2D Opora2(Xp = X02, Yp = Y02, Xt = L4 / 2, Yt = 0);
+      
+      Joint2D Sharnir1(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
+      //Joint2D Sharnir2(Xt1 = L2 / 2, Yt1 = 0, Xt2 = R * cos(phi0_3), Yt2 = R * sin(phi0_3));
+      Joint2D Sharnir2(Xt1 = L2 / 2, Yt1 = 0, Xt2 = -L3 /2, Yt2 = 0);
+      Joint2D Sharnir3(Xt1 = L3 / 2, Yt1 = 0, Xt2 = -L4 /2, Yt2 = 0);
+      Joint2D Sharnir4(Xt1 = L2 / 2, Yt1 = 0, Xt2 = 0, Yt2 = 0);
+      
+      Wheel2D Koleso(R = R, Color = {150, 0, 0});
+      
+      RollCircleOnBottom Kachenie(R = R, Xp = XK, Yp = YK, Phip = phip);
+      
+      
+      //Joint2D Sharnir3(Xt1 = -L2 / 2, Yt1 = 0, Xt2 = -L4 / 2, Yt2 = 0);
+      
+      //Slider2D Polzun(Xp = XC, Yp = 0, Phip = phiC, Xt = L4 / 2, Yt = 0);
+    equation
+      connect(Palka1.Body_Out, Opora1.Body_In);
+      connect(Palka1.Body_Out, Sharnir1.Body_In1);
+      connect(Palka2.Body_Out, Sharnir1.Body_In2);
+      connect(Palka2.Body_Out, Sharnir2.Body_In1);
+      connect(Palka3.Body_Out, Sharnir2.Body_In2);
+      connect(Palka3.Body_Out, Sharnir3.Body_In1);
+      connect(Palka4.Body_Out, Sharnir3.Body_In2);
+      connect(Palka4.Body_Out, Opora2.Body_In);
+      
+      connect(Palka2.Body_Out, Sharnir4.Body_In1);
+      connect(Koleso.Body_Out, Sharnir4.Body_In2);
+      connect(Koleso.Body_Out, Kachenie.Body_In);
+      //connect(Palka2.Body_Out, Sharnir3.Body_In1);
+      //connect(Palka4.Body_Out, Sharnir3.Body_In2);
+      //connect(Palka4.Body_Out, Polzun.Body_In);
+      der(Palka1.Phi) = 1;
+      //der(Palka4.Phi) = 1;
+      annotation(
+        experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
+    end Zadanie13;
+  end laba5_kinematic;
+
+  package Lab6_Dynamic
+    //extends Modelica.Units.SI;
+
+    connector KinematicInput
+      input Modelica.Units.SI.Length X;
+      input Modelica.Units.SI.Length Y;
+      input Modelica.Units.SI.Angle Phi;
+    end KinematicInput;
+
+    connector KinematicOutput
+      output Modelica.Units.SI.Length X;
+      output Modelica.Units.SI.Length Y;
+      output Modelica.Units.SI.Angle Phi;
+    end KinematicOutput;
+
+    connector ForceInput
+      input Modelica.Units.SI.Length X;
+      input Modelica.Units.SI.Length Y;
+      input Modelica.Units.SI.Force Fx;
+      input Modelica.Units.SI.Force Fy;
+      input Modelica.Units.SI.MomentOfForce M;
+    end ForceInput;
+
+    connector ForceOutput
+      output Modelica.Units.SI.Length X;
+      output Modelica.Units.SI.Length Y;
+      output Modelica.Units.SI.Force Fx;
+      output Modelica.Units.SI.Force Fy;
+      output Modelica.Units.SI.MomentOfForce M;
+    end ForceOutput;
+
+    model TwoPortBody2D
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      parameter Real Color[3] = {0, 0, 255};
+      parameter Modelica.Units.SI.Acceleration g = 9.81;
+      parameter Modelica.Units.SI.Mass m = 1;
+      //parameter Modelica.Units.SI.MomentOfInertia J = 1;
+      Modelica.Units.SI.Length X;
+      Modelica.Units.SI.Length Y;
+      Modelica.Units.SI.Angle Phi;
+      Modelica.Units.SI.Velocity Vx;
+      Modelica.Units.SI.Velocity Vy;
+      Modelica.Units.SI.AngularVelocity Omega;
+      Modelica.Units.SI.Length CA[2];
+      Modelica.Units.SI.Length CB[2];
+      KinematicOutput Body_Out;
+      ForceInput F_A;
+      ForceInput F_B;
+    equation
+      Body_Out.X = X;
+      Body_Out.Y = Y;
+      Body_Out.Phi = Phi;
+      der(X) = Vx;
+      der(Y) = Vy;
+      der(Phi) = Omega;
+      CA = {F_A.X - X, F_A.Y - Y};
+      CB = {F_B.X - X, F_B.Y - Y};
+      m * der(Vx) = F_A.Fx + F_B.Fx;
+      m * der(Vy) = F_A.Fy + F_B.Fy - m * g;
+      m * der(Omega) = CA[1] * F_A.Fy - CA[2] * F_A.Fx + F_A.M + CB[1] * F_B.Fy - CB[2] * F_B.Fx + F_B.M;
+    end TwoPortBody2D;
+
+    model TwoPortRod2D
+      extends Fejzullin_Lab_5_6.Lab6_Dynamic.TwoPortBody2D;
+      parameter Modelica.Units.SI.Length L = 1;
+      //parameter Modelica.Units.SI.Mass m = 1;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
+      parameter Modelica.Units.SI.MomentOfInertia J = m * L ^ 2 / 12;
+    equation
+
+    end TwoPortRod2D;
+
+    model TwoPortWheel2D
+      extends Fejzullin_Lab_5_6.Lab6_Dynamic.TwoPortBody2D;
+      parameter Modelica.Units.SI.Length R = 1;
+      //parameter Modelica.Units.SI.Mass m = 1;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape WheelShape(shapeType = "cylinder", length = 0.1, width = 2 * R, height = 2 * R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape BoxShape(shapeType = "box", length = 0.2, width = R, height = R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = 0.7 * Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
+      parameter Modelica.Units.SI.MomentOfInertia J = m * R ^ 2 / 2;
+    equation
+
+    end TwoPortWheel2D;
+
+    model Support2D
+      parameter Modelica.Units.SI.Length Xp = 0;
+      parameter Modelica.Units.SI.Length Yp = 0;
+      parameter Modelica.Units.SI.Length Xt = 0;
+      parameter Modelica.Units.SI.Length Yt = 0;
+      parameter Real Color[3] = {0, 0, 0};
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape SupportShape(shapeType = "cylinder", length = 0.5, width = 0.2, height = 0.2, widthDirection = {1, 0, 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {Xp, Yp, -0.2}, R = orientation, r_shape = {0, 0, 0});
+      KinematicInput Body_In;
+      // Dynamics
+      Modelica.Units.SI.Force Rx;
+      Modelica.Units.SI.Force Ry;
+      ForceOutput FO;
+    equation
+      Xp = Body_In.X + Xt * cos(Body_In.Phi) - Yt * sin(Body_In.Phi);
+      Yp = Body_In.Y + Xt * sin(Body_In.Phi) + Yt * sin(Body_In.Phi);
+// Dynamics
+      FO.X = Xp;
+      FO.Y = Yp;
+      FO.Fx = Rx;
+      FO.Fy = Ry;
+      FO.M = 0;
+    end Support2D;
+
+    model FreeEnd
+      ForceOutput FO;
+    equation
+      FO.X = 0;
+      FO.Y = 0;
+      FO.Fx = 0;
+      FO.Fy = 0;
+      FO.M = 0;
+    end FreeEnd;
+
+    model KolesoSOporoi
+      parameter Modelica.Units.SI.Length R = 2;
+      parameter Modelica.Units.SI.AngularVelocity Omega_0 = 2;
+      TwoPortWheel2D Koleso(R = R, Color = {0, 255, 0}, m = 2, Omega(start = Omega_0));
+      Support2D Opora(Xp = 0, Yp = 0, Xt = -R * 3 / 4, Yt = 0);
+      FreeEnd Hvost;
+    equation
+      connect(Koleso.Body_Out, Opora.Body_In);
+      connect(Koleso.F_A, Opora.FO);
+      connect(Koleso.F_B, Hvost.FO);
+      annotation(
+        experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.0002));
+    end KolesoSOporoi;
+
+    model Joint2D
+      Modelica.Units.SI.Length Xsh;
+      Modelica.Units.SI.Length Ysh;
+      parameter Modelica.Units.SI.Length Xt1 = 0;
+      parameter Modelica.Units.SI.Length Yt1 = 0;
+      parameter Modelica.Units.SI.Length Xt2 = 0;
+      parameter Modelica.Units.SI.Length Yt2 = 0;
+      parameter Real Color[3] = {0, 0, 200};
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape SupportShape(shapeType = "cylinder", length = 0.5, width = 0.2, height = 0.2, widthDirection = {1, 0, 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {Xsh, Ysh, -0.2}, R = orientation, r_shape = {0, 0, 0});
+      KinematicInput Body_In1;
+      KinematicInput Body_In2;
+      // Dynamics
+      Modelica.Units.SI.Force Rx;
+      Modelica.Units.SI.Force Ry;
+      ForceOutput FO1;
+      ForceOutput FO2;
+    equation
+      Xsh = Body_In1.X + Xt1 * cos(Body_In1.Phi) - Yt1 * sin(Body_In1.Phi);
+      Ysh = Body_In1.Y + Xt1 * sin(Body_In1.Phi) + Yt1 * cos(Body_In1.Phi);
+      Xsh = Body_In2.X + Xt2 * cos(Body_In2.Phi) - Yt2 * sin(Body_In2.Phi);
+      Ysh = Body_In2.Y + Xt2 * sin(Body_In2.Phi) + Yt2 * cos(Body_In2.Phi);
+// Dynamics
+      FO1.X = Xsh;
+      FO1.Y = Ysh;
+      FO1.Fx = Rx;
+      FO1.Fy = Ry;
+      FO1.M = 0;
+      FO2.X = Xsh;
+      FO2.Y = Ysh;
+      FO2.Fx = -Rx;
+      FO2.Fy = -Ry;
+      FO2.M = 0;
+      annotation(
+        experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
+    end Joint2D;
+
+    model DvePalkiNaOpore
+      parameter Modelica.Units.SI.Length L1 = 2;
+      parameter Modelica.Units.SI.Length L2 = 4;
+      TwoPortRod2D Palka1(L = L1, Color = {0, 255, 80}, m = 2);
+      TwoPortRod2D Palka2(L = L2, Color = {255, 255, 0}, m = 4);
+      Support2D Opora(Xp = 0, Yp = 0, Xt = -L1 / 2, Yt = 0);
+      Joint2D Sharnir(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L1 / 2, Yt2 = 0);
+      FreeEnd Hvost;
+    equation
+      connect(Palka1.Body_Out, Opora.Body_In);
+      connect(Palka1.Body_Out, Sharnir.Body_In1);
+      connect(Palka2.Body_Out, Sharnir.Body_In2);
+      connect(Palka1.F_A, Opora.FO);
+      connect(Palka1.F_B, Sharnir.FO1);
+      connect(Palka2.F_A, Sharnir.FO2);
+      connect(Palka2.F_B, Hvost.FO);
+      annotation(
+        experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.0002));
+    end DvePalkiNaOpore;
+
+    model TriPalki
+      parameter Modelica.Units.SI.Length L1 = 2;
+      parameter Modelica.Units.SI.Length L2 = 4;
+      parameter Modelica.Units.SI.Length L3 = 6;
+      parameter Modelica.Units.SI.Angle phi0_1 = 1;
+      parameter Modelica.Units.SI.Angle phi0_2 = 0;
+      parameter Modelica.Units.SI.Angle phi0_3 = -2;
+      parameter Modelica.Units.SI.Length Xo2 = L1 * cos(phi0_1) + L2 * cos(phi0_2) + L3 * cos(phi0_3);
+      parameter Modelica.Units.SI.Length Yo2 = L1 * sin(phi0_1) + L2 * sin(phi0_2) + L3 * sin(phi0_3);
+      TwoPortRod2D Palka1(Phi(start = phi0_1), L = L1, Color = {0, 255, 80}, m = 2);
+      TwoPortRod2D Palka2(Phi(start = phi0_2), L = L2, Color = {255, 255, 0}, m = 4);
+      TwoPortRod2D Palka3(Phi(start = phi0_3), L = L3, Color = {255, 0, 255}, m = 6);
+      Support2D Opora1(Xp = 0, Yp = 0, Xt = -L1 / 2, Yt = 0);
+      Support2D Opora2(Xp = Xo2, Yp = Yo2, Xt = L3 / 2, Yt = 0);
+      Joint2D Sharnir1(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
+      Joint2D Sharnir2(Xt1 = L2 / 2, Yt1 = 0, Xt2 = -L3 / 2, Yt2 = 0);
+    equation
+      connect(Palka1.Body_Out, Opora1.Body_In);
+      connect(Palka1.Body_Out, Sharnir1.Body_In1);
+      connect(Palka2.Body_Out, Sharnir1.Body_In2);
+      connect(Palka2.Body_Out, Sharnir2.Body_In1);
+      connect(Palka3.Body_Out, Sharnir2.Body_In2);
+      connect(Palka3.Body_Out, Opora2.Body_In);
+      connect(Palka1.F_A, Opora1.FO);
+      connect(Palka1.F_B, Sharnir1.FO1);
+      connect(Palka2.F_A, Sharnir1.FO2);
+      connect(Palka2.F_B, Sharnir2.FO1);
+      connect(Palka3.F_A, Sharnir2.FO2);
+      connect(Palka3.F_B, Opora2.FO);
+      annotation(
+        experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.0002));
+    end TriPalki;
+
+    model Slider2D
+      parameter Modelica.Units.SI.Length Xp = 0;
+      parameter Modelica.Units.SI.Length Yp = 0;
+      parameter Modelica.Units.SI.Angle Phip = 0;
+      parameter Modelica.Units.SI.Length Xt = 0;
+      parameter Modelica.Units.SI.Length Yt = 0;
+      Modelica.Units.SI.Length Xpol;
+      Modelica.Units.SI.Length Ypol;
+      Modelica.Units.SI.Length S;
+      parameter Real Color[3] = {0, 255, 255};
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      parameter Modelica.Units.SI.Length l = 0.3;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape SliderShape(shapeType = "box", length = l, width = 0.2, height = 0.2, lengthDirection = {cos(Phip), sin(Phip), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {Xpol - l / 2 * cos(Phip), Ypol - l / 2 * sin(Phip), 0}, R = orientation);
+      KinematicInput Body_In;
+      Modelica.Units.SI.Force N;
+      ForceOutput FO;
+    equation
+      Xpol = Body_In.X + Xt * cos(Body_In.Phi) - Yt * sin(Body_In.Phi);
+      Ypol = Body_In.Y + Xt * sin(Body_In.Phi) + Yt * sin(Body_In.Phi);
+      Xpol = Xp + S * cos(Phip);
+      Ypol = Yp + S * sin(Phip);
+// Dynamics
+      FO.X = Xpol;
+      FO.Y = Ypol;
+      FO.Fx = -N * sin(Phip);
+      FO.Fy = N * cos(Phip);
+      FO.M = 0;
+      annotation(
+        experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
+    end Slider2D;
+
+    model DvePalkiPlusPolzun
+      parameter Modelica.Units.SI.Length L1 = 2;
+      parameter Modelica.Units.SI.Length L2 = 4;
+      TwoPortRod2D Palka1(L = L1, Color = {0, 255, 80}, m = 2);
+      TwoPortRod2D Palka2(L = L2, Color = {255, 255, 0}, m = 4);
+      Support2D Opora(Xp = 0, Yp = 0, Xt = -L1 / 2, Yt = 0);
+      Joint2D Sharnir(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
+      Slider2D Polzun(Xp = 0, Yp = 1.3, Phip = 0, Xt = L2 / 2, Yt = 0);
+    equation
+      connect(Palka1.Body_Out, Opora.Body_In);
+      connect(Palka1.Body_Out, Sharnir.Body_In1);
+      connect(Palka2.Body_Out, Sharnir.Body_In2);
+      connect(Palka2.Body_Out, Polzun.Body_In);
+      connect(Palka1.F_A, Opora.FO);
+      connect(Palka1.F_B, Sharnir.FO1);
+      connect(Palka2.F_A, Sharnir.FO2);
+      connect(Palka2.F_B, Polzun.FO);
+      annotation(
+        experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
+    end DvePalkiPlusPolzun;
+
+    model RollCircleOnLine
+      parameter Modelica.Units.SI.Length Xp = 0;
+      parameter Modelica.Units.SI.Length Yp = 0;
+      parameter Modelica.Units.SI.Angle Phip = 0;
+      parameter Modelica.Units.SI.Length R = 1;
+      Modelica.Units.SI.Length Xk;
+      Modelica.Units.SI.Length Yk;
+      Modelica.Units.SI.Length S;
+      parameter Real Color[3] = {0, 0, 0};
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      parameter Modelica.Units.SI.Length l = 3.5 * R;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape FlatShape(shapeType = "box", length = l, width = 0.2, height = 0.2, lengthDirection = {cos(Phip), sin(Phip), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {Xp - l / 2 * cos(Phip) + 0.1 * sin(Phip), Yp - l / 2 * sin(Phip) - 0.1 * cos(Phip), 0}, R = orientation);
+      KinematicInput Body_In;
+      //Dinamics
+      Modelica.Units.SI.Force N;
+      Modelica.Units.SI.Force Ftr;
+      ForceOutput FO;
+    equation
+      Xk = Body_In.X + R * sin(Phip);
+      Yk = Body_In.Y - R * cos(Phip);
+      Xk = Xp + S * cos(Phip);
+      Yk = Yp + S * sin(Phip);
+      der(S) = -der(Body_In.Phi) * R;
+// Dynamics
+      FO.X = Xk;
+      FO.Y = Yk;
+      FO.Fx = (-N * sin(Phip)) - Ftr * cos(Phip);
+      FO.Fy = N * cos(Phip) - Ftr * sin(Phip);
+      FO.M = 0;
+      annotation(
+        experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
+    end RollCircleOnLine;
+
+    model PalkiPlusKoleso
+      parameter Modelica.Units.SI.Length L1 = 2;
+      parameter Modelica.Units.SI.Length L2 = 4;
+      parameter Modelica.Units.SI.Angle phi0_1 = 1.57;
+      parameter Modelica.Units.SI.Angle phi0_2 = 0.3;
+      parameter Modelica.Units.SI.Angle phip = 0.7;
+      parameter Modelica.Units.SI.Length R = 1;
+      parameter Modelica.Units.SI.Length XK = L1 * cos(phi0_1) + L2 * cos(phi0_2) + R * sin(phip);
+      parameter Modelica.Units.SI.Length YK = L1 * sin(phi0_1) + L2 * sin(phi0_2) - R * cos(phip);
+      TwoPortRod2D Palka1(L = L1, Color = {0, 255, 80}, Phi(start = phi0_1), m = 2);
+      TwoPortRod2D Palka2(L = L2, Color = {255, 255, 0}, Phi(start = phi0_2), m = 4);
+      Support2D Opora(Xp = 0, Yp = 0, Xt = -L1 / 2, Yt = 0);
+      Joint2D Sharnir1(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
+      Joint2D Sharnir2(Xt1 = L2 / 2, Yt1 = 0, Xt2 = 0, Yt2 = 0);
+      TwoPortWheel2D Koleso(R = R, Color = {150, 0, 0});
+      RollCircleOnLine Kachenie(R = R, Xp = XK, Yp = YK, Phip = phip);
+    equation
+      connect(Palka1.Body_Out, Opora.Body_In);
+      connect(Palka1.Body_Out, Sharnir1.Body_In1);
+      connect(Palka2.Body_Out, Sharnir1.Body_In2);
+      connect(Palka2.Body_Out, Sharnir2.Body_In1);
+      connect(Koleso.Body_Out, Sharnir2.Body_In2);
+      connect(Koleso.Body_Out, Kachenie.Body_In);
+      connect(Palka1.F_A, Opora.FO);
+      connect(Palka1.F_B, Sharnir1.FO1);
+      connect(Palka2.F_A, Sharnir1.FO2);
+      connect(Palka2.F_B, Sharnir2.FO1);
+      connect(Koleso.F_A, Sharnir2.FO2);
+      connect(Koleso.F_B, Kachenie.FO);
+      annotation(
+        experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
+    end PalkiPlusKoleso;
+
+    model Zadanie11_Dynamic
       parameter Modelica.Units.SI.Length L1 = 1;
       parameter Modelica.Units.SI.Length L2 = 3;
       parameter Modelica.Units.SI.Length L4 = 3;
@@ -647,14 +682,14 @@ package Andreev_labs_2022
       parameter Modelica.Units.SI.Length XK = X0 + L1 * cos(phi0_1) + L2 * cos(phi0_2) + 2 * R * sin(phip);
       parameter Modelica.Units.SI.Length YK = Y0 + L1 * sin(phi0_1) + L2 * sin(phi0_2) - 2 * R * cos(phip);
       parameter Modelica.Units.SI.Length XC = X0 + L1 * cos(phi0_1) + L4 * cos(phi0_4);
-      Rod2D Palka1(L = L1, Color = {0, 255, 80}, Phi(start = phi0_1));
-      Rod2D Palka2(L = L2, Color = {255, 255, 0}, Phi(start = phi0_2));
+      TwoPortRod2D Palka1(L = L1, Color = {0, 255, 80}, Phi(start = phi0_1), m = 1);
+      ThreePortRod2D Palka2(L = L2, Color = {255, 255, 0}, Phi(start = phi0_2), m = 3);
       Support2D Opora(Xp = X0, Yp = X0, Xt = -L1 / 2, Yt = 0);
       Joint2D Sharnir1(Xt1 = L1 / 2, Yt1 = 0, Xt2 = -L2 / 2, Yt2 = 0);
       Joint2D Sharnir2(Xt1 = L2 / 2, Yt1 = 0, Xt2 = R * cos(phi0_3), Yt2 = R * sin(phi0_3));
-      Wheel2D Koleso(R = R, Color = {150, 0, 0});
+      TwoPortWheel2D Koleso(R = R, Color = {150, 0, 0}, m = 4);
       RollCircleOnLine Kachenie(R = R, Xp = XK, Yp = YK, Phip = phip);
-      Rod2D Palka4(L = L4, Color = {255, 0, 255}, Phi(start = phi0_4));
+      TwoPortRod2D Palka4(L = L4, Color = {255, 0, 255}, Phi(start = phi0_4), m = 3);
       Joint2D Sharnir3(Xt1 = -L2 / 2, Yt1 = 0, Xt2 = -L4 / 2, Yt2 = 0);
       Slider2D Polzun(Xp = XC, Yp = 0, Phip = phiC, Xt = L4 / 2, Yt = 0);
     equation
@@ -667,11 +702,73 @@ package Andreev_labs_2022
       connect(Palka2.Body_Out, Sharnir3.Body_In1);
       connect(Palka4.Body_Out, Sharnir3.Body_In2);
       connect(Palka4.Body_Out, Polzun.Body_In);
-      der(Palka1.Phi) = 1;
+      connect(Palka1.F_A, Opora.FO);
+      connect(Palka1.F_B, Sharnir1.FO1);
+      connect(Palka2.F_A, Sharnir1.FO2);
+      connect(Palka2.F_B, Sharnir2.FO1);
+      connect(Koleso.F_A, Sharnir2.FO2);
+      connect(Koleso.F_B, Kachenie.FO);
+      connect(Palka2.F_C, Sharnir3.FO1);
+      connect(Palka4.F_A, Sharnir3.FO2);
+      connect(Palka4.F_B, Polzun.FO);
       annotation(
         experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
-    end Zadanie11;
-  end laba5_kinematic;
+    end Zadanie11_Dynamic;
+
+    model ThreePortBody2D
+      parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
+      parameter Real Color[3] = {0, 0, 255};
+      parameter Modelica.Units.SI.Acceleration g = 9.81;
+      parameter Modelica.Units.SI.Mass m = 1;
+      //parameter Modelica.Units.SI.MomentOfInertia J = 1;
+      Modelica.Units.SI.Length X;
+      Modelica.Units.SI.Length Y;
+      Modelica.Units.SI.Angle Phi;
+      Modelica.Units.SI.Velocity Vx;
+      Modelica.Units.SI.Velocity Vy;
+      Modelica.Units.SI.AngularVelocity Omega;
+      Modelica.Units.SI.Length CA[2];
+      Modelica.Units.SI.Length CB[2];
+      Modelica.Units.SI.Length CC[2];
+      KinematicOutput Body_Out;
+      ForceInput F_A;
+      ForceInput F_B;
+      ForceInput F_C;
+    equation
+      Body_Out.X = X;
+      Body_Out.Y = Y;
+      Body_Out.Phi = Phi;
+      der(X) = Vx;
+      der(Y) = Vy;
+      der(Phi) = Omega;
+      CA = {F_A.X - X, F_A.Y - Y};
+      CB = {F_B.X - X, F_B.Y - Y};
+      CC = {F_C.X - X, F_C.Y - Y};
+      m * der(Vx) = F_A.Fx + F_B.Fx + F_C.Fx;
+      m * der(Vy) = F_A.Fy + F_B.Fy + F_C.Fy - m * g;
+      m * der(Omega) = CA[1] * F_A.Fy - CA[2] * F_A.Fx + F_A.M + CB[1] * F_B.Fy - CB[2] * F_B.Fx + F_B.M + CC[1] * F_C.Fy - CC[2] * F_C.Fx + F_C.M;
+    end ThreePortBody2D;
+
+    model ThreePortWheel2D
+      extends Fejzullin_Lab_5_6.Lab6_Dynamic.ThreePortBody2D;
+      parameter Modelica.Units.SI.Length L = 1;
+      //parameter Modelica.Units.SI.Mass m = 1;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
+      parameter Modelica.Units.SI.MomentOfInertia J = m * L ^ 2 / 12;
+    equation
+
+    end ThreePortWheel2D;
+
+    model ThreePortRod2D
+      extends Fejzullin_Lab_5_6.Lab6_Dynamic.ThreePortBody2D;
+      parameter Modelica.Units.SI.Length L = 1;
+      //parameter Modelica.Units.SI.Mass m = 1;
+      Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
+      parameter Modelica.Units.SI.MomentOfInertia J = m * L ^ 2 / 12;
+    equation
+
+    end ThreePortRod2D;
+  end Lab6_Dynamic;
   annotation(
     uses(Modelica(version = "4.0.0")));
-end Andreev_labs_2022;
+end Fejzullin_Lab_5_6;
