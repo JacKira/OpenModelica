@@ -1,5 +1,5 @@
 package Fejzullin_Lab_5_6
-  package laba5_kinematic
+  package Lab_5_Kinematica
     model Body2D
       parameter Modelica.Mechanics.MultiBody.Frames.Orientation orientation = Modelica.Mechanics.MultiBody.Frames.axesRotations({1, 2, 3}, {0, 0, 0}, {0, 0, 0});
       parameter Real Color[3] = {0, 0, 255};
@@ -26,7 +26,7 @@ package Fejzullin_Lab_5_6
     end KinematicOutput;
 
     model Rod2D
-      extends Fejzullin_Lab_5_6.laba5_kinematic.Body2D;
+      extends Fejzullin_Lab_5_6.Lab_5_Kinematica.Body2D;
       parameter Modelica.Units.SI.Length L = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
     equation
@@ -47,7 +47,7 @@ package Fejzullin_Lab_5_6
     end FreeRod;
 
     model Wheel2D
-      extends Fejzullin_Lab_5_6.laba5_kinematic.Body2D;
+      extends Fejzullin_Lab_5_6.Lab_5_Kinematica.Body2D;
       parameter Modelica.Units.SI.Length R = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape WheelShape(shapeType = "cylinder", length = 0.1, width = 2 * R, height = 2 * R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape BoxShape(shapeType = "box", length = 0.2, width = R, height = R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = 0.7 * Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
@@ -210,7 +210,7 @@ package Fejzullin_Lab_5_6
       annotation(
         experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
     end Zadanie13;
-  end laba5_kinematic;
+  end Lab_5_Kinematica;
   
   package Lab_6_Dynamica
     model Body2D
@@ -297,7 +297,7 @@ package Fejzullin_Lab_5_6
     equation
       Xp = Body_In.X + Xt * cos(Body_In.Phi) - Yt * sin(Body_In.Phi);
       Yp = Body_In.Y + Xt * sin(Body_In.Phi) + Yt * sin(Body_In.Phi);
-       // Additional for Dynamica
+// Additional for Dynamica
       FO.X = Xp;
       FO.Y = Yp;
       FO.Fx = Rx;
@@ -330,7 +330,7 @@ package Fejzullin_Lab_5_6
       Ysh = Body_In1.Y + Xt1 * sin(Body_In1.Phi) + Yt1 * cos(Body_In1.Phi);
       Xsh = Body_In2.X + Xt2 * cos(Body_In2.Phi) - Yt2 * sin(Body_In2.Phi);
       Ysh = Body_In2.Y + Xt2 * sin(Body_In2.Phi) + Yt2 * cos(Body_In2.Phi);
-      // Dynamics
+// Dynamics
       FO1.X = Xsh;
       FO1.Y = Ysh;
       FO1.Fx = Rx;
@@ -391,7 +391,7 @@ package Fejzullin_Lab_5_6
       Xk = Xp + S * cos(Phip);
       Yk = Yp + S * sin(Phip);
       der(S) = -der(Body_In.Phi) * R;
-      // Dynamics
+// Dynamics
       FO.X = Xk;
       FO.Y = Yk;
       FO.Fx = (-N * sin(Phip)) - Ftr * cos(Phip);
@@ -471,15 +471,12 @@ package Fejzullin_Lab_5_6
       connect(Palka2.F_C, Sharnir4.FO1);
       connect(Koleso.F_A, Sharnir4.FO2);
       connect(Koleso.F_B, Kachenie.FO);
-      
-    //  connect(Koleso.F_A, Sharnir2.FO2);
-    //  connect(Koleso.F_B, Kachenie.FO);
-    //  connect(Palka2.F_C, Sharnir3.FO1);
-    //  connect(Palka4.F_A, Sharnir3.FO2);
-    //  connect(Palka4.F_B, Polzun.FO);
-    
-    
-      //der(Palka1.Phi) = 1;
+//  connect(Koleso.F_A, Sharnir2.FO2);
+//  connect(Koleso.F_B, Kachenie.FO);
+//  connect(Palka2.F_C, Sharnir3.FO1);
+//  connect(Palka4.F_A, Sharnir3.FO2);
+//  connect(Palka4.F_B, Polzun.FO);
+//der(Palka1.Phi) = 1;
       annotation(
         experiment(StartTime = 0, StopTime = 6.3, Tolerance = 1e-06, Interval = 0.000200006));
     end Zadanie13;
@@ -532,7 +529,7 @@ package Fejzullin_Lab_5_6
     end TwoPortBody2D;
 
     model TwoPortRod2D
-      extends Fejzullin_Lab_5_6.Lab6_Dynamic.TwoPortBody2D;
+      extends Fejzullin_Lab_5_6.Lab_6_Dynamica.TwoPortBody2D;
       parameter Modelica.Units.SI.Length L = 1;
       //parameter Modelica.Units.SI.Mass m = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
@@ -542,7 +539,7 @@ package Fejzullin_Lab_5_6
     end TwoPortRod2D;
 
     model TwoPortWheel2D
-      extends Fejzullin_Lab_5_6.Lab6_Dynamic.TwoPortBody2D;
+      extends Fejzullin_Lab_5_6.Lab_6_Dynamica.TwoPortBody2D;
       parameter Modelica.Units.SI.Length R = 1;
       //parameter Modelica.Units.SI.Mass m = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape WheelShape(shapeType = "cylinder", length = 0.1, width = 2 * R, height = 2 * R, widthDirection = {cos(Phi), sin(Phi), 0}, lengthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X, Y, 0}, R = orientation, r_shape = {0, 0, 0});
@@ -597,7 +594,7 @@ package Fejzullin_Lab_5_6
     end ThreePortWheel2D;
 
     model ThreePortRod2D
-      extends Fejzullin_Lab_5_6.Lab6_Dynamic.ThreePortBody2D;
+      extends Fejzullin_Lab_5_6.Lab_6_Dynamica.ThreePortBody2D;
       parameter Modelica.Units.SI.Length L = 1;
       //parameter Modelica.Units.SI.Mass m = 1;
       Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape RodShape(shapeType = "box", length = L, width = 0.1, height = 0.1, lengthDirection = {cos(Phi), sin(Phi), 0}, widthDirection = {0, 0, 1}, color = Color, specularCoefficient = 0.5, r = {X - L / 2 * cos(Phi), Y - L / 2 * sin(Phi), 0}, R = orientation);
