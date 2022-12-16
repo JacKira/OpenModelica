@@ -207,10 +207,7 @@ package Fejzullin_Lab_5_6
       
     
       der(Palka1.Phi) = (Modelica.Constants.pi - Palka3.Phi)/2  ;
-    
-     
-    
-      //der(Palka3.Phi) = 1.3;
+//der(Palka3.Phi) = 1.3;
       annotation(
         experiment(StartTime = 0, StopTime = 4.6, Tolerance = 1e-06, Interval = 0.000146036));
     end Zadanie13;
@@ -471,7 +468,7 @@ package Fejzullin_Lab_5_6
       connect(Koleso.F_B, Kachenie.FO);
     
       annotation(
-        experiment(StartTime = 0, StopTime = 12, Tolerance = 1e-06, Interval = 0.000380964));
+        experiment(StartTime = 0, StopTime = 12, Tolerance = 1e-06, Interval = 0.0001));
     end Zadanie13;
 
     // New Obljects for Dynamica Modeling
